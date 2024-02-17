@@ -32,14 +32,19 @@ struct QueueArray<T>: Queue {
     
     init(){ }
         
-    var isEmpty: Bool { array.isEmpty }
+    var isEmpty: Bool {
+        array.isEmpty
+    }
     
-    var peek: T? { array.first }
+    var peek: T? {
+        array.first
+    }
     
     mutating func enqueue(_ element: T) {
         array.append(element)
     }
     
+    @discardableResult
     mutating func dequeue()->T? {
         isEmpty ? nil : array.removeFirst()
     }
@@ -47,15 +52,75 @@ struct QueueArray<T>: Queue {
 
 extension QueueArray: CustomStringConvertible {
     var description: String {
-        "--- queue start ---\n" + array.map { "\($0)" }.joined(separator: " -> ") + "\n--- queue end ---"
+        "Queue : " + array.map { "\($0)" }.joined(separator: " -> ")
     }
 }
 
-var queue = QueueArray<Int>()
-queue.enqueue(5)
-queue.enqueue(7)
-queue.enqueue(9)
-queue.enqueue(11)
 
-print(queue.description)
-print(queue.peek)
+struct QueueStack<T>: Queue {
+   private var leftStack: [T] = [] //actually an array
+    private var rightStack: [T] = []//actually an array
+
+    init(){ }
+        
+    var isEmpty: Bool {
+        leftStack.isEmpty && rightStack.isEmpty
+    }
+    
+    var peek: T? { 
+        leftStack.isEmpty ? rightStack.first : leftStack.last
+    }
+    
+    mutating func enqueue(_ element: T) {
+        rightStack.append(element)
+    }
+    
+    @discardableResult
+    mutating func dequeue()->T? {
+        if leftStack.isEmpty {
+            leftStack = rightStack.reversed()
+            rightStack.removeAll()
+        }
+        
+        return leftStack.popLast()
+    }
+}
+
+extension QueueStack: CustomStringConvertible {
+    var description: String {
+        "Queue : " + (leftStack.reversed() + rightStack).map { "\($0)" }.joined(separator: " -> ")
+    }
+}
+
+block("With Array") {
+    var queue = QueueArray<Int>()
+    queue.enqueue(5)
+    queue.enqueue(7)
+    queue.enqueue(9)
+    queue.enqueue(11)
+
+    queue.dequeue()
+//    queue.dequeue()
+
+    print(queue.description)
+    print(queue.peek)
+}
+
+
+block("With Stack") {
+    var queue = QueueStack<Int>()
+    queue.enqueue(5)
+    queue.enqueue(7)
+    queue.enqueue(9)
+    queue.enqueue(11)
+
+    queue.dequeue()
+//    queue.dequeue()
+
+    print(queue.description)
+    print(queue.peek)
+    
+}
+
+
+
