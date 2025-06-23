@@ -28,6 +28,7 @@ protocol Queue {
 
 
 struct QueueArray<T>: Queue {
+
    private var array: [T] = []
     
     init(){ }
@@ -283,6 +284,32 @@ block("With Stack") {
 
     print(queue.description)
     print(queue.peek)
+}
+
+
+block("Reverse A Queue") {
+    
+    var queue = QueueArray<Int>()
+    queue.enqueue(5)
+    queue.enqueue(10)
+    queue.enqueue(15)
+    queue.enqueue(20)
+    queue.enqueue(25)
+    
+    print(queue)
+
+    var array = [Int]()
+
+    
+    while let item = queue.dequeue() {
+        array.append(item)
+    }
+    
+    while let item = array.popLast() {
+        queue.enqueue(item)
+    }
+
+    print(queue)
 }
 
 
